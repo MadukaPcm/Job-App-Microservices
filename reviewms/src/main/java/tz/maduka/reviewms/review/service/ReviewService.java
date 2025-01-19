@@ -11,7 +11,7 @@ import java.util.List;
 public interface ReviewService {
 
    List<Review> getAllReviews(Long companyId);
-   boolean addReview(ReviewDto reviewDto);
+   boolean addReview(Long companyId, ReviewDto reviewDto);
    Review getReview(Long reviewId);
    boolean updateReview(Long reviewId,ReviewDto reviewDto );
    boolean deleteReview(Long reviewId);

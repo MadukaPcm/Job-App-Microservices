@@ -1,6 +1,8 @@
 package tz.maduka.jobms.job.serviceImpl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import tz.maduka.jobms.job.external.Company;
 import tz.maduka.jobms.job.model.Job;
 import tz.maduka.jobms.job.payload.rest.dto.JobDto;
 import tz.maduka.jobms.job.repository.JobRepository;
@@ -22,6 +24,11 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<Job> findAll() {
+
+        RestTemplate restTemplate = new RestTemplate();
+        Company company = restTemplate.getForObject("http://localhost:8082/companies/1", Company.class);
+        System.out.println("Company - name: "+company.getName());
+        System.out.println("Company - id: "+company.getId());
         return jobRepository.findAll();
     }
 

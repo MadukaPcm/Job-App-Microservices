@@ -26,7 +26,7 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<String> addReview(@RequestParam Long companyId, @RequestBody ReviewDto reviewDto){
-      boolean success = reviewService.addReview(reviewDto);
+      boolean success = reviewService.addReview(companyId,reviewDto);
       if (success){
           return new ResponseEntity<>("Review added successfully !!", HttpStatus.OK);
       }else {

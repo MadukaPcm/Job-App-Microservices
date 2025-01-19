@@ -19,7 +19,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     List<Company> getAllCompany(){
         return companyService.getAllCompanies();
     }
@@ -34,7 +34,7 @@ public class CompanyController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/")
     ResponseEntity<String> createCompany(@RequestBody CompanyDto companyDto){
         try {
             boolean companyCreated =  companyService.createCompany(companyDto);

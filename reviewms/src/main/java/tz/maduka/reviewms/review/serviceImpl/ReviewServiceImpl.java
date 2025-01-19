@@ -24,13 +24,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public boolean addReview(ReviewDto reviewDto) {
+    public boolean addReview(Long companyId, ReviewDto reviewDto) {
         if (reviewDto != null){
             Review review = new Review();
             System.out.println(reviewDto.getTitle() +"  ====> "+reviewDto.getDescription()+"=============>>");
             review.setTitle(reviewDto.getTitle());
             review.setDescription(reviewDto.getDescription());
-            review.setCompanyId(reviewDto.getCompanyId());
+            review.setCompanyId(companyId);
             review.setRating(reviewDto.getRating());
             System.out.println("Saving review: " + review); // Debug log
             reviewRepository.save(review);
