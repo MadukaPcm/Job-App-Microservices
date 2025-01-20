@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tz.maduka.jobms.job.dto.JobWithCompanyDto;
 import tz.maduka.jobms.job.model.Job;
 import tz.maduka.jobms.job.payload.rest.dto.JobDto;
 import tz.maduka.jobms.job.service.JobService;
@@ -23,7 +24,7 @@ public class JobController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Job>> findAll(){
+    public ResponseEntity<List<JobWithCompanyDto>> findAll(){
         return new ResponseEntity<>(jobService.findAll(), HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package tz.maduka.jobms.job.service;
 
+import tz.maduka.jobms.job.dto.JobWithCompanyDto;
 import tz.maduka.jobms.job.model.Job;
 import tz.maduka.jobms.job.payload.rest.dto.JobDto;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface JobService {
 
-    List<Job> findAll();
+    List<JobWithCompanyDto> findAll();
 
     void createJob(JobDto job);
 
