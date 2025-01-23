@@ -4,7 +4,7 @@
 
 ## Microservice conversion web-services from JobApp, Available via : https://github.com/MadukaPcm/JobApp
 
-## The System have three services:
+## The System have three web-services:
   1. Job service
   2. Company service
   3. Review service
