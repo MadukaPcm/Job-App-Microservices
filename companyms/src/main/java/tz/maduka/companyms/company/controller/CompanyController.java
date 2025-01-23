@@ -13,13 +13,13 @@ import java.util.List;
 @RequestMapping("/companies")
 public class CompanyController {
 
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
     public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     List<Company> getAllCompany(){
         return companyService.getAllCompanies();
     }
@@ -34,7 +34,7 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping
     ResponseEntity<String> createCompany(@RequestBody CompanyDto companyDto){
         try {
             boolean companyCreated =  companyService.createCompany(companyDto);

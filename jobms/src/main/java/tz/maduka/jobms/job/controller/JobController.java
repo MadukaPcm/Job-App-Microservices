@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tz.maduka.jobms.job.dto.JobWithCompanyDto;
-import tz.maduka.jobms.job.model.Job;
+import tz.maduka.jobms.job.dto.JobDTO;
 import tz.maduka.jobms.job.payload.rest.dto.JobDto;
 import tz.maduka.jobms.job.service.JobService;
 import java.util.List;
@@ -23,22 +22,22 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<JobWithCompanyDto>> findAll(){
+    @GetMapping
+    public ResponseEntity<List<JobDTO>> findAll(){
         return new ResponseEntity<>(jobService.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<String> createJob(@RequestBody JobDto job){
         jobService.createJob(job);
         return new ResponseEntity<>("Job added successfully !!",HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getJobById(@PathVariable Long id){
-        Job job = jobService.getJobById(id);
-        if(job != null){
-            return new ResponseEntity<>(job, HttpStatus.OK);
+    public ResponseEntity<JobDTO> getJobById(@PathVariable Long id){
+        JobDTO jobDTO = jobService.getJobById(id);
+        if(jobDTO != null){
+            return new ResponseEntity<>(jobDTO, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

@@ -1,12 +1,16 @@
 package tz.maduka.jobms.job.serviceImpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import tz.maduka.jobms.job.dto.JobWithCompanyDto;
+import tz.maduka.jobms.job.dto.JobDTO;
 import tz.maduka.jobms.job.external.Company;
+import tz.maduka.jobms.job.external.Review;
+import tz.maduka.jobms.job.mapper.JobMapper;
 import tz.maduka.jobms.job.model.Job;
 import tz.maduka.jobms.job.payload.rest.dto.JobDto;
 import tz.maduka.jobms.job.repository.JobRepository;
@@ -20,109 +24,69 @@ import java.util.stream.Collectors;
 @Service
 public class JobServiceImpl implements JobService {
 
-    private JobRepository jobRepository;
-    private final WebClient webClient;
+    private final JobRepository jobRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @Value("${external.api.company.base-url}")
     private String companyServiceBaseUrl;
 
-    public JobServiceImpl(JobRepository jobRepository, WebClient.Builder webClientBuilder) {
+    public JobServiceImpl(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
-        this.webClient = webClientBuilder.build();
     }
 
     //    List<Job> jobs = new ArrayList<>();
 
     @Override
-    public List<JobWithCompanyDto> findAll() {
-        WebClient client = webClient.mutate().baseUrl(companyServiceBaseUrl).build();
-
+    public List<JobDTO> findAll() {
         List<Job> jobs = jobRepository.findAll();
-        List<JobWithCompanyDto> JobWithCompanyDTOs = new ArrayList<>();
+        List<JobDTO> jobDTOS = new ArrayList<>();
 
-
-
-//        USING REST-TEMPLATE (OLD)
-
-//        RestTemplate restTemplate = new RestTemplate();
-//        Company company = restTemplate.getForObject("http://localhost:8082/companies/1", Company.class);
-//        System.out.println("Company - name: "+company.getName());
-//        System.out.println("Company - id: "+company.getId());
-
-//        USING WEB-CLIENT  (MODERN)
-//        Create a WebClient instance with the base URL from properties
-//        WebClient client = webClient.mutate().baseUrl(companyServiceBaseUrl).build();
-//
-//        // Call the external service
-//        Mono<Company> companyMono = client
-//                .get()
-//                .uri("/companies/1") // Specify the endpoint
-//                .retrieve()
-//                .bodyToMono(Company.class);
-
-        // Process the Mono asynchronously
-//        companyMono.subscribe(
-//                company -> {
-//                    // This block runs when the company data is successfully retrieved
-//                    System.out.println("Company - name: " + company.getName());
-//                    System.out.println("Company - id: " + company.getId());
-//                },
-//                error -> {
-//                    // This block runs if there's an error fetching the company data
-//                    System.err.println("Error fetching company details: " + error.getMessage());
-//                }
-//        );
-
-        // Block to get the Company object (for synchronous behavior)
-//        Company company = companyMono.block();
-//
-//        // Log the company details
-//        if (company != null) {
-//            System.out.println("Company -> name: " + company.getName());
-//            System.out.println("Company -> id: " + company.getId());
-//        } else {
-//            System.err.println("Failed to fetch company details.");
-//        }
-
-        return jobs.stream()
-                .map(job -> convertToDto(job, client))
-                .collect(Collectors.toList());
-//                .map(this::convertToDto).collect(Collectors.toList());
+        return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    private JobWithCompanyDto convertToDto(Job job, WebClient client){
+    private JobDTO convertToDto(Job job) {
+        JobDTO jobDTO = JobMapper.mapToJobWithCompanyDTO(job);
 
-        JobWithCompanyDto jobWithCompanyDto = new JobWithCompanyDto();
-        jobWithCompanyDto.setJob(job);
+        // Check if companyId is null
+        if (job.getCompanyId() == null) {
+            jobDTO.setCompany(null);
+        } else {
+            try {
+                // Fetch the company details if companyId is not null
+                Company company = restTemplate.getForObject(
+                        "http://COMPANY-SERVICE/companies/" + job.getCompanyId(),
+                        Company.class
+                );
+                if (company != null){
+                    ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange(
+                            "http://REVIEW-SERVICE:8083/reviews?companyId=" + job.getCompanyId(),
+                            HttpMethod.GET,
+                            null,
+                            new ParameterizedTypeReference<List<Review>>() {
 
-        if(job.getCompanyId() == null){
-            jobWithCompanyDto.setCompany(null);
-        }else {
-            try{
-                // Call the external service
-                Mono<Company> companyMono = client
-                        .get()
-                        .uri("/companies/"+job.getCompanyId()) // Specify the endpoint
-                        .retrieve()
-                        .bodyToMono(Company.class);
-
-                // Block to get the Company object (for synchronous behavior)
-                Company company = companyMono.block();
-                if(company == null){
-                    // LOG
-                    System.out.println("No company Found for company-id "+ job.getCompanyId());
-                    jobWithCompanyDto.setCompany(null);
+                            }
+                    );
+                    List<Review> reviews = reviewResponse.getBody();
+                    System.out.println("===============    reviews  ========================= " +reviews);
+                    jobDTO.setCompany(company);
+                    jobDTO.setReview(reviews);
+                }else {
+                    jobDTO.setCompany(null);
+                    jobDTO.setReview(null);
                 }
-                jobWithCompanyDto.setCompany(company);
-            }catch (Exception e){
-                // LOG ERROR
-                System.out.println("Error occurred while fetching company: e -> "+e.getMessage());
-                jobWithCompanyDto.setCompany(null);
+            } catch (Exception e) {
+                // Handle any exception during the API call and set company to null
+                jobDTO.setCompany(null);
+                // Optionally log the error for debugging
+                System.err.println("Error fetching company details: " + e.getMessage());
             }
         }
-//        for (Job job : jobs) {
-        return jobWithCompanyDto;
+        return jobDTO;
     }
+
+
 
     @Override
     public void createJob(JobDto jobDto) {
@@ -137,15 +101,35 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job getJobById(Long id) {
+    public JobDTO getJobById(Long id) {
 
-        return jobRepository.findById(id).orElse(null);
-//        for(Job job : jobs){
-//            if(job.getId().equals(id)){
-//                return job;
-//            }
-//        }
-//        return null;
+        Job job = jobRepository.findById(id).orElse(null);
+        if(job == null){
+            return null;
+        }else {
+            JobDTO jobDTO = JobMapper.mapToJobWithCompanyDTO(job);
+            // Check if companyId is null
+            if (job.getCompanyId() == null) {
+                jobDTO.setCompany(null);
+            } else {
+                try {
+                    // Fetch the company details if companyId is not null
+                    Company company = restTemplate.getForObject(
+                            "http://COMPANY-SERVICE/companies/" + job.getCompanyId(),
+                            Company.class
+                    );
+                    jobDTO.setCompany(company);
+                } catch (Exception e) {
+                    // Handle any exception during the API call and set company to null
+                    jobDTO.setCompany(null);
+                    // Optionally log the error for debugging
+                    System.err.println("Error fetching company details: " + e.getMessage());
+                }
+            }
+
+            return jobDTO;
+        }
+
     }
 
     @Override
