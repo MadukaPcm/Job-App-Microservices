@@ -7,6 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tz.maduka.jobms.job.client.CompanyClient;
+import tz.maduka.jobms.job.client.ReviewClient;
 import tz.maduka.jobms.job.dto.JobDTO;
 import tz.maduka.jobms.job.external.Company;
 import tz.maduka.jobms.job.external.Review;
@@ -29,11 +31,16 @@ public class JobServiceImpl implements JobService {
     @Autowired
     RestTemplate restTemplate;
 
+    final private CompanyClient companyClient;
+    final private ReviewClient reviewClient;
+
     @Value("${external.api.company.base-url}")
     private String companyServiceBaseUrl;
 
-    public JobServiceImpl(JobRepository jobRepository) {
+    public JobServiceImpl(JobRepository jobRepository, CompanyClient companyClient, ReviewClient reviewClient) {
         this.jobRepository = jobRepository;
+        this.companyClient = companyClient;
+        this.reviewClient = reviewClient;
     }
 
     //    List<Job> jobs = new ArrayList<>();
@@ -55,20 +62,28 @@ public class JobServiceImpl implements JobService {
         } else {
             try {
                 // Fetch the company details if companyId is not null
-                Company company = restTemplate.getForObject(
-                        "http://COMPANY-SERVICE/companies/" + job.getCompanyId(),
-                        Company.class
-                );
-                if (company != null){
-                    ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange(
-                            "http://REVIEW-SERVICE:8083/reviews?companyId=" + job.getCompanyId(),
-                            HttpMethod.GET,
-                            null,
-                            new ParameterizedTypeReference<List<Review>>() {
+                // Rest-template............
+                // Company company = restTemplate.getForObject(
+                //        "http://COMPANY-SERVICE/companies/" + job.getCompanyId(),
+                //        Company.class
+                //);
 
-                            }
-                    );
-                    List<Review> reviews = reviewResponse.getBody();
+                // OpenFeign package...........
+                Company company = companyClient.getCompany(job.getCompanyId());
+
+                if (company != null){
+                    // Rest-template............
+                    //ResponseEntity<List<Review>> reviewResponse = restTemplate.exchange(
+                    //        "http://REVIEW-SERVICE:8083/reviews?companyId=" + job.getCompanyId(),
+                    //        HttpMethod.GET,
+                    //       null,
+                    //        new ParameterizedTypeReference<List<Review>>() {
+                    //        }
+                    // );
+                    // List<Review> reviews = reviewResponse.getBody();
+
+                    // OpenFeign package...........
+                    List<Review> reviews = reviewClient.getReview(job.getCompanyId());
                     System.out.println("===============    reviews  ========================= " +reviews);
                     jobDTO.setCompany(company);
                     jobDTO.setReview(reviews);
