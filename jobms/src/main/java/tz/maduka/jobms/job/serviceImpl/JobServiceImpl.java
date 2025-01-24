@@ -2,13 +2,10 @@ package tz.maduka.jobms.job.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import tz.maduka.jobms.job.client.CompanyClient;
-import tz.maduka.jobms.job.client.ReviewClient;
+import tz.maduka.jobms.job.clients.CompanyClient;
+import tz.maduka.jobms.job.clients.ReviewClient;
 import tz.maduka.jobms.job.dto.JobDTO;
 import tz.maduka.jobms.job.external.Company;
 import tz.maduka.jobms.job.external.Review;

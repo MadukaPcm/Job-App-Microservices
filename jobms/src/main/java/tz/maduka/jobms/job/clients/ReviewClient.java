@@ -1,4 +1,4 @@
-package tz.maduka.jobms.job.client;
+package tz.maduka.jobms.job.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

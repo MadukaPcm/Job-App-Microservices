@@ -60,7 +60,7 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>3.4.1</version>
 		</dependency>
-		<!--		This dependency is for eureka cloud client to replace Rest Template. -->
+		<!--		This dependency is for eureka cloud clients to replace Rest Template. -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -77,7 +77,7 @@
 		</dependency>
 	</dependencies>
 
-	<!--		This dependency is for eureka cloud client to replace Rest Template. -->
+	<!--		This dependency is for eureka cloud clients to replace Rest Template. -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
