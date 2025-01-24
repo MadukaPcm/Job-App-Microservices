@@ -9,4 +9,6 @@
   2. Company service
   3. Review service
   
-
+## ZipKin server for Distributed Tracing (Using docker file).
+  Docx => https://zipkin.io/pages/quickstart
+  Command => docker run -d -p 9411:9411 openzipkin/zipkin (run it in detached mode)
