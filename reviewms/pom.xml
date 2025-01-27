@@ -54,6 +54,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<!--  A non-blocking and reactive HTTP client alternative to RestTemplate -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -64,7 +66,7 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!--       This is OpenFeign package which replace Rest template and remove Boiler-plate codes -->
+		<!--  This is OpenFeign package which replace Rest (template, Web-Flux) and remove Boiler-plate codes -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
