@@ -12,3 +12,7 @@
 ## ZipKin server for Distributed Tracing (Using docker file).
   Docx => https://zipkin.io/pages/quickstart
   Command => docker run -d -p 9411:9411 openzipkin/zipkin (run it in detached mode)
+  
+## Useful links for Spring-OAuth2 with JWT and API-Gateway.
+  OAuth2  => https://www.geeksforgeeks.org/spring-boot-oauth2-with-jwt 
+  API-Gateway  => https://www.geeksforgeeks.org/api-gateway-authentication-and-authorization-in-spring-boot
