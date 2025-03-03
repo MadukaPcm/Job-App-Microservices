@@ -1,5 +1,7 @@
 package tz.maduka.jobms.job.serviceImpl;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
+    private int attempt = 0;
 
     @Autowired
     RestTemplate restTemplate;
@@ -43,11 +46,20 @@ public class JobServiceImpl implements JobService {
     //    List<Job> jobs = new ArrayList<>();
 
     @Override
+//    @CircuitBreaker(name="companyBreaker", fallbackMethod = "companyBreakerFallback")
+    @Retry(name="companyBreaker", fallbackMethod = "companyBreakerFallback")
     public List<JobDTO> findAll() {
+        System.out.println("Attempt "+ ++attempt);
         List<Job> jobs = jobRepository.findAll();
         List<JobDTO> jobDTOS = new ArrayList<>();
 
         return jobs.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public List<String> companyBreakerFallback(Exception e){
+        List<String> list = new ArrayList<>();
+        list.add("Dummy");
+        return list;
     }
 
     private JobDTO convertToDto(Job job) {
