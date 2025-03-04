@@ -14,12 +14,12 @@ public class Review {
     private Long id;
     private String title;
     private String description;
-    private double rating;
+    private Double rating;
     private Long companyId;
 
     public Review() {}
 
-    public Review(Long id, String title, String description, double rating, Long companyId) {
+    public Review(Long id, String title, String description, Double rating, Long companyId) {
         this.id = id;
         this.title = title;
         this.description = description;

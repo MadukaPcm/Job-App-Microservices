@@ -1,19 +1,19 @@
-package tz.maduka.reviewms.review.payload.rest;
+package tz.maduka.reviewms.review.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
-@Getter
+// MESSAGE FORMAT
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewDto {
+public class ReviewMessage {
 
     private Long id;
     private String title;
     private String description;
     private Double rating;
     private Long companyId;
+
 }

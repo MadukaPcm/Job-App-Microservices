@@ -4,6 +4,7 @@ package tz.maduka.reviewms.review.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tz.maduka.reviewms.review.messaging.ReviewMessageProducer;
 import tz.maduka.reviewms.review.model.Review;
 import tz.maduka.reviewms.review.payload.rest.ReviewDto;
 import tz.maduka.reviewms.review.service.ReviewService;
@@ -14,9 +15,11 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewController {
    final private ReviewService reviewService;
+   final private ReviewMessageProducer reviewMessageProducer;
 
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, ReviewMessageProducer reviewMessageProducer) {
         this.reviewService = reviewService;
+        this.reviewMessageProducer = reviewMessageProducer;
     }
 
     @GetMapping
@@ -27,7 +30,10 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<String> addReview(@RequestParam Long companyId, @RequestBody ReviewDto reviewDto){
       boolean success = reviewService.addReview(companyId,reviewDto);
+
       if (success){
+          reviewDto.setCompanyId(companyId);
+          reviewMessageProducer.sendMessage(reviewDto);
           return new ResponseEntity<>("Review added successfully !!", HttpStatus.OK);
       }else {
           return new ResponseEntity<>("Failed to create review !!",HttpStatus.BAD_REQUEST);
@@ -55,5 +61,11 @@ public class ReviewController {
             return new ResponseEntity<>("Review deleted successfully !!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Review delete failed !!", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/averageMapping")
+    public double getAverageReview(@RequestParam Long companyId){
+        List<Review> reviewList = reviewService.getAllReviews(companyId);
+        return reviewList.stream().mapToDouble(Review::getRating).average().orElse(0.0);
     }
 }

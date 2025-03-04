@@ -1,6 +1,9 @@
 package tz.maduka.companyms.company.serviceImpl;
 
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.stereotype.Service;
+import tz.maduka.companyms.company.clients.ReviewClient;
+import tz.maduka.companyms.company.dto.ReviewMessage;
 import tz.maduka.companyms.company.model.Company;
 import tz.maduka.companyms.company.payload.rest.dto.CompanyDto;
 import tz.maduka.companyms.company.repository.CompanyRepository;
@@ -13,9 +16,11 @@ import java.util.Optional;
 public class CompanyServiceImpl implements CompanyService {
 
     private CompanyRepository companyRepository;
+    private ReviewClient reviewClient;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository) {
+    public CompanyServiceImpl(CompanyRepository companyRepository, ReviewClient reviewClient) {
         this.companyRepository = companyRepository;
+        this.reviewClient = reviewClient;
     }
 
     @Override
@@ -52,6 +57,16 @@ public class CompanyServiceImpl implements CompanyService {
         }catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public void updateCompanyRating(ReviewMessage reviewMessage) {
+        System.out.println("Description "+ reviewMessage.getDescription());
+        Company company = companyRepository.findById(reviewMessage.getCompanyId()).orElseThrow(()->new NotFoundException("Company Not Found"+reviewMessage.getCompanyId()));
+
+        double averageRating = reviewClient.getAverageRatingForCompany(reviewMessage.getCompanyId());
+        company.setRating(averageRating);
+        companyRepository.save(company);
     }
 
     @Override

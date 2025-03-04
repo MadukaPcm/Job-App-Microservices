@@ -1,12 +1,16 @@
 package tz.maduka.companyms.company.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 //@Table(name = "company")
 public class Company {
 
@@ -15,14 +19,7 @@ public class Company {
     private Long id;
     private String name;
     private String description;
-
-    public Company() {
-    }
-
-    public Company(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
+    @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0.0")
+    private Double rating = 0.0;
 
 }
