@@ -1,4 +1,4 @@
-package tz.maduka.companyms.company.controller;
+package tz.maduka.companyms.company.controller.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

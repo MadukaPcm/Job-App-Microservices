@@ -1,4 +1,4 @@
-package tz.maduka.jobms.job.controller;
+package tz.maduka.jobms.job.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

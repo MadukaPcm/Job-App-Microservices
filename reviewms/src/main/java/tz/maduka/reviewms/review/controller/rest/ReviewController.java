@@ -1,4 +1,4 @@
-package tz.maduka.reviewms.review.controller;
+package tz.maduka.reviewms.review.controller.rest;
 
 
 import org.springframework.http.HttpStatus;
