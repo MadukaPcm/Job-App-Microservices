@@ -12,7 +12,7 @@ import tz.maduka.reviewms.review.service.ReviewService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/review-service/reviews")
 public class ReviewController {
    final private ReviewService reviewService;
    final private ReviewMessageProducer reviewMessageProducer;

@@ -10,7 +10,7 @@ import tz.maduka.companyms.company.service.CompanyService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/companies")
+@RequestMapping("/company-service/companies")
 public class CompanyController {
 
     private final CompanyService companyService;

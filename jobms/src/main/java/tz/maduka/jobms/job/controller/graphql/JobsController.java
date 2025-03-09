@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class JobsController {
 
     @GraphQLQuery(name = "getJobHome", description = "Get Job Home")
-    public String findByDepartmentName() {
-        return "Welcome to graphql job service";
+    public String getJobHome() {
+        return "Welcome to GraphQL Job Service";
     }
 }

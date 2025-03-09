@@ -10,7 +10,7 @@ import tz.maduka.jobms.job.service.JobService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/jobs")
+@RequestMapping(path = "/job-service/jobs")
 public class JobController {
 
 //    @Autowired=

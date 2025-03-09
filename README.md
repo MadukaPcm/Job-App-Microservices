@@ -13,7 +13,7 @@
   1. Docx => https://zipkin.io/pages/quickstart
   2. Commands.
      - docker run -d -p 9411:9411 openzipkin/zipkin (run it in detached mode)
-     - docker run -d --name rabbitmq-server -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+     - docker run -d --name rabbitmq-server -p 5672:5672 -p 15672:15672 rabbitmq:4-management (Access admin page via http://localhost:15672/ ).
   
 ## Useful links for Spring-OAuth2 with JWT and API-Gateway.
   1. OAuth2  => https://www.geeksforgeeks.org/spring-boot-oauth2-with-jwt 
